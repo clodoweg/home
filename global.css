@@ -1,0 +1,181 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --font-sans: Inter, system-ui, -apple-system, sans-serif;
+  /* Titles and big figures; the files are self-hosted (CSP: font-src 'self'), see main.tsx. */
+  --font-display: 'Bricolage Grotesque Variable', Inter, system-ui, sans-serif;
+
+  /* Corner of a bento tile (widget, home tile, dialog). */
+  --radius-tile: 1.75rem;
+
+  /* Line heights of Tailwind 3 (rem): v4's ratios (e.g. calc(1 / 0.75)) round each text line
+     about 1px shorter, and the layout drifted by up to 36px down the dashboard. */
+  --text-xs--line-height: 1rem;
+  --text-sm--line-height: 1.25rem;
+  --text-base--line-height: 1.5rem;
+  --text-lg--line-height: 1.75rem;
+  --text-xl--line-height: 1.75rem;
+  --text-2xl--line-height: 2rem;
+  --text-3xl--line-height: 2.25rem;
+  --text-4xl--line-height: 2.5rem;
+
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+
+  --color-success: hsl(var(--success));
+  --color-success-foreground: hsl(var(--success-foreground));
+
+  --color-warning: hsl(var(--warning));
+  --color-warning-foreground: hsl(var(--warning-foreground));
+
+  --color-info: hsl(var(--info));
+  --color-info-foreground: hsl(var(--info-foreground));
+
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+
+  /* Domain tones: full-colour fills of the bento tiles and widget chips, identical in both
+     themes. Text on them is always `ink` (white on cobalt). */
+  --color-sun: #ffe600;
+  --color-coral: #ff3d6e;
+  --color-tangerine: #ff8a00;
+  --color-lime: #a6ff00;
+  --color-aqua: #00e5d4;
+  --color-lilac: #c9b8ff;
+  --color-cobalt: #5b2eff;
+  --color-ink: #14171a;
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
+
+@layer base {
+  :root {
+    --background: 225 13% 6%;
+    --foreground: 210 11% 96%;
+
+    --card: 223 12% 12%;
+    --card-foreground: 210 11% 96%;
+
+    --popover: 223 12% 12%;
+    --popover-foreground: 210 11% 96%;
+
+    /* The strong neutral: a light pill on dark, a dark pill on light. Colour belongs to the tones. */
+    --primary: 210 11% 96%;
+    --primary-foreground: 210 13% 9%;
+
+    --secondary: 222 11% 19%;
+    --secondary-foreground: 210 11% 96%;
+
+    --muted: 220 11% 16%;
+    --muted-foreground: 217 11% 68%;
+
+    --accent: 46 100% 62%;
+    --accent-foreground: 210 13% 9%;
+
+    --destructive: 4 90% 66%;
+    --destructive-foreground: 210 13% 9%;
+
+    --success: 142 60% 58%;
+    --success-foreground: 210 13% 9%;
+
+    --warning: 38 95% 60%;
+    --warning-foreground: 210 13% 9%;
+
+    --info: 217 95% 72%;
+    --info-foreground: 210 13% 9%;
+
+    --border: 220 11% 22%;
+    --input: 220 11% 22%;
+    --ring: 210 11% 96%;
+  }
+
+  .light {
+    --background: 220 12% 95%;
+    --foreground: 210 13% 9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 210 13% 9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 210 13% 9%;
+
+    --primary: 210 13% 9%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 220 11% 91%;
+    --secondary-foreground: 210 13% 9%;
+
+    --muted: 220 14% 96%;
+    --muted-foreground: 214 10% 38%;
+
+    --accent: 46 100% 62%;
+    --accent-foreground: 210 13% 9%;
+
+    --destructive: 6 78% 44%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 145 70% 28%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 28 90% 36%;
+    --warning-foreground: 0 0% 100%;
+
+    --info: 221 83% 46%;
+    --info-foreground: 0 0% 100%;
+
+    --border: 220 12% 87%;
+    --input: 220 12% 87%;
+    --ring: 210 13% 9%;
+  }
+
+  body {
+    @apply bg-background font-sans text-foreground;
+  }
+}
+
+/* Tailwind 4 no longer gives buttons the pointer cursor (v3 did): kept as in v3, per its guide. */
+@layer base {
+  button:not(:disabled),
+  [role='button']:not(:disabled) {
+    cursor: pointer;
+  }
+}

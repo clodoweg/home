@@ -1,0 +1,38 @@
+# Régénère les captures de référence Linux des tests visuels Playwright, dans l'image Docker
+# officielle de Playwright (même version que @playwright/test), et les publie en artefact.
+# Lancement manuel : Actions → « Update Linux snapshots » → Run workflow (le fichier doit être sur
+# la branche par défaut), puis télécharger l'artefact « linux-snapshots » en bas de la page du run.
+name: Update Linux snapshots
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  snapshots:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    container:
+      # Keep in sync with the @playwright/test version in package-lock.json (also in e2e.yml).
+      image: mcr.microsoft.com/playwright:v1.64.1-noble
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Regenerate visual baselines (Chromium desktop + WebKit iPhone)
+        run: npx playwright test -g "screenshot" --project=mocked --project=mocked-mobile --update-snapshots=all
+        env:
+          UPDATE_SNAPSHOTS: '1'
+          VITE_TEST_MODE: 'true'
+
+      - name: Publish the Linux baselines
+        uses: actions/upload-artifact@v7
+        with:
+          name: linux-snapshots
+          path: e2e/approach-1-mocked/**/*-snapshots/*-linux.png
+          if-no-files-found: error
+          retention-days: 7

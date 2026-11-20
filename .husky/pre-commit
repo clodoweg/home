@@ -1,0 +1,3 @@
+# Types first (about 2 s): a commit that does not compile is refused before lint-staged runs.
+npx tsc --noEmit
+npx lint-staged

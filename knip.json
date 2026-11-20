@@ -1,0 +1,20 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "entry": ["App.tsx", "e2e/**/*.spec.ts", "scripts/*.mjs"],
+  "project": ["src/**/*.{ts,tsx}", "e2e/**/*.ts", "scripts/*.mjs"],
+  "vite": {
+    "config": ["vite.config.mts"]
+  },
+  "vitest": {
+    "config": ["vitest.config.mts"]
+  },
+  "playwright": {
+    "config": ["playwright.config.ts"]
+  },
+  "eslint": {
+    "config": ["eslint.config.mjs"]
+  },
+  "typescript": {
+    "config": ["tsconfig.json"]
+  }
+}

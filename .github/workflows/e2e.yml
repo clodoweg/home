@@ -1,0 +1,84 @@
+# Mocked E2E (desktop Chromium + iPhone WebKit). The most expensive job of the repository (~11 min
+# billed per run before November 2026), and `npm run verify` already runs it locally before every
+# push: in CI it runs only
+# - on a pull request carrying the `e2e` label (added at creation, or later: adding it starts a run,
+#   and every new push to the PR runs it again while the label stays);
+# - by hand (Actions → E2E → Run workflow, on any branch);
+# - every night on main, only if main changed in the last 24 hours.
+name: E2E
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, labeled]
+  schedule:
+    # 02:17 UTC, outside busy hours
+    - cron: '17 2 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: e2e-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Nightly only: skips the run (and the Playwright image pull) when main did not move.
+  main-changed:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    outputs:
+      recent: ${{ steps.check.outputs.recent }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - id: check
+        run: echo "recent=$(( $(date +%s) - $(git log -1 --format=%ct) < 86400 ))" >> "$GITHUB_OUTPUT"
+
+  e2e:
+    name: E2E (mocked, desktop and mobile)
+    needs: main-changed
+    # `always()` lets this job run although main-changed is skipped outside the schedule. On a PR,
+    # adding a label other than `e2e` does not start a run.
+    if: >-
+      always() && (
+        github.event_name == 'workflow_dispatch' ||
+        (github.event_name == 'schedule' && needs.main-changed.outputs.recent == '1') ||
+        (github.event_name == 'pull_request' &&
+          contains(github.event.pull_request.labels.*.name, 'e2e') &&
+          (github.event.action != 'labeled' || github.event.label.name == 'e2e'))
+      )
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    container:
+      # Browsers preinstalled. Keep in sync with @playwright/test in package-lock.json
+      # (also in update-snapshots.yml).
+      image: mcr.microsoft.com/playwright:v1.64.1-noble
+    steps:
+      - uses: actions/checkout@v7
+
+      # Only for the npm cache (npm ci took ~45 s without it).
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - run: npm ci
+
+      - name: E2E tests
+        run: npx playwright test --project=mocked --project=mocked-mobile
+        env:
+          CI: true
+          VITE_TEST_MODE: true
+
+      - name: Upload report
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 3

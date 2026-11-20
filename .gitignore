@@ -1,0 +1,34 @@
+# dependencies
+node_modules/
+
+# build
+dist/
+dist-e2e/
+
+# debug
+npm-debug.*
+
+# macOS
+.DS_Store
+
+# local env files
+.env*.local
+.env
+
+# typescript
+*.tsbuildinfo
+
+# Playwright
+test-results/
+playwright-report/
+blob-report/
+
+# Vercel
+.vercel
+
+# Claude Code (fichiers personnels)
+CLAUDE.local.md
+.claude/settings.local.json
+
+# Vitest
+coverage/
