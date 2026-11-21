@@ -164,5 +164,6 @@ npm run test:e2e:report                    # dernier rapport HTML
 - Pour une capture d'écran de contrôle, un spec jetable dans `e2e/approach-1-mocked/_tmp/` (supprimé
   ensuite) avec `mockAllApis` et `bypassClerkAuth` suffit ; `page.addInitScript` pose le thème
   (`localStorage['app-theme-preference']`).
-- Une preview Vercel ne peut pas parler au back : `home-back` n'autorise que `home.psaltery.org` et
-  `localhost:5173` en CORS (« Erreur de profil / Failed to fetch » sur une URL `*.vercel.app`).
+- Une preview Vercel ne peut pas parler au back : `home-back` n'autorise que `home.psaltery.org` en
+  CORS en production (« Erreur de profil / Failed to fetch » sur une URL `*.vercel.app`, comme sur
+  `localhost:5173` : en local, lance aussi le back et vise-le avec `VITE_API_URL`).

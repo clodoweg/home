@@ -20,8 +20,9 @@ npm install
 npm run dev          # http://localhost:5173
 ```
 
-Créer `.env.local` avec `VITE_CLERK_PUBLISHABLE_KEY` et, pour viser un back local,
-`VITE_API_URL=http://localhost:3000` (sinon l'API de production est utilisée).
+Créer `.env.local` avec `VITE_CLERK_PUBLISHABLE_KEY` (clé de l'instance Clerk de développement)
+et `VITE_API_URL=http://localhost:3000` : l'API de production n'accepte que l'origine du front de
+production, le serveur de dev doit viser un back lancé en local.
 
 Navigateurs pris en charge : Safari / iOS 16.4+, Chrome 111+, Firefox 128+ (Vite 8, Tailwind 4).
 
