@@ -280,7 +280,8 @@ maquettes », non versionné). Le back, les services, hooks, permissions et le c
 - Ce dépôt est le front. Le back est `../home-back` (Next.js API + Prisma + Vitest), avec son propre
   `CLAUDE.md`.
 - Back de prod : `https://home-back.psaltery.org` ; front de prod : `https://home.psaltery.org`.
-  Le back autorise ces origines (et localhost:5173) dans sa liste CORS.
+  En production, le back n'autorise que l'origine du front dans sa liste CORS ; `localhost:5173`
+  seulement hors production : `npm run dev` vise donc un back local (`VITE_API_URL`).
 - Contrat : chaque appel envoie `Authorization: Bearer <JWT Clerk>`. Les erreurs du back ont la forme
   `{ error, details, code }` ; le front réagit aux codes `USER_NOT_FOUND` et `IP_RESTRICTED`.
 - **Toute nouvelle route du back implique son client dans `src/services/<domaine>.ts`** (ré-exporté
