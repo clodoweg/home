@@ -194,7 +194,12 @@ lint-staged (`eslint --fix`, `prettier --write` sur les fichiers indexés).
   `update-snapshots.yml` (manuel : régénère les captures Linux des tests visuels). CodeQL (analyse
   de sécurité du TypeScript et des workflows, suite « Extended ») tourne en **configuration par
   défaut** de GitHub (Settings → Code security), sans fichier : n'ajoute pas de `codeql.yml`, les
-  deux configurations ne coexistent pas. Résultats dans Security → Code scanning.
+  deux configurations ne coexistent pas. Résultats dans Security → Code scanning. Dependabot
+  (`.github/dependabot.yml`) ouvre chaque lundi une PR groupée (npm mineures et correctifs, actions
+  GitHub), une PR par version majeure, et une PR de sécurité dès qu'une faille est publiée ; la CI
+  les vérifie comme les autres. `@playwright/test` en est exclu : il se met à jour à la main avec
+  l'image Docker et les captures Linux. Signalement des failles : `SECURITY.md` (signalement privé
+  de GitHub).
 
 ## Refonte UI de novembre 2026 : état et reprise
 
