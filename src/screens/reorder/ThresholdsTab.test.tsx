@@ -57,12 +57,12 @@ describe('ThresholdsTab', () => {
     user.isAdmin = true;
     renderTab();
 
-    fireEvent.change(screen.getByTestId('input-telegram-temp-min'), { target: { value: '40' } });
-    fireEvent.change(screen.getByTestId('input-telegram-hum-min'), { target: { value: '120' } });
+    fireEvent.change(screen.getByTestId('input-alert-temp-min'), { target: { value: '40' } });
+    fireEvent.change(screen.getByTestId('input-alert-hum-min'), { target: { value: '120' } });
     await save();
 
     expect(screen.getByRole('status')).toHaveTextContent(
-      'Notifications Telegram Température : Le seuil minimal doit être inférieur au seuil maximal.',
+      'Alertes Température : Le seuil minimal doit être inférieur au seuil maximal.',
     );
   });
 });

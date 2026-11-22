@@ -1,7 +1,6 @@
 /**
- * NotificationsScreen — Telegram notification configuration for admin users.
- * Lets the admin enter their Telegram chat ID and toggle which categories
- * of events should push a message (alarm / lights / spa / fountain / feeder).
+ * NotificationsScreen — Alert categories of admin users: which events reach the bell and the
+ * push notifications (alarm / lights / spa / fountain / feeder…).
  */
 import React, { useState } from 'react';
 import { Bell, Check, Loader2 } from 'lucide-react';
@@ -18,7 +17,7 @@ const CATEGORIES: { key: keyof NotificationPreferences; label: string; descripti
   {
     key: 'motion',
     label: 'Mouvement',
-    description: 'Mouvement détecté par les caméras quand l’alarme est activée (avec photos)',
+    description: 'Mouvement détecté par les caméras quand l’alarme est activée',
   },
   { key: 'lights', label: 'Lumières', description: "Allumage/extinction d'une pièce" },
   { key: 'spa', label: 'Spa', description: 'Température sous 36°C' },
@@ -47,7 +46,7 @@ const CATEGORIES: { key: keyof NotificationPreferences; label: string; descripti
 ];
 
 /**
- * Telegram notification settings of the admin.
+ * Alert categories of the admin.
  *
  * @returns The form once the settings are loaded, or a retry message if they could not be.
  */
@@ -85,13 +84,12 @@ export const NotificationsScreen = () => {
 };
 
 const NotificationsForm = ({ initial }: { initial: NotificationSettings }) => {
-  const [chatId, setChatId] = useState(initial.telegramChatId ?? '');
   const [prefs, setPrefs] = useState<NotificationPreferences>(initial.notificationPreferences);
   const saveSettings = useSaveNotificationSettings();
 
   const handleSave = () => {
     saveSettings
-      .mutateAsync({ telegramChatId: chatId.trim() || null, notificationPreferences: prefs })
+      .mutateAsync({ notificationPreferences: prefs })
       .catch((e) => logger.error('Failed to save notification settings', e));
   };
 
@@ -103,32 +101,6 @@ const NotificationsForm = ({ initial }: { initial: NotificationSettings }) => {
 
   return (
     <div className="flex flex-col gap-6 p-6">
-      <Panel className="rounded-2xl">
-        <div className="mb-3 flex flex-row items-center gap-2">
-          <Bell size={16} className="text-primary" />
-          <span className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
-            Telegram
-          </span>
-        </div>
-        <label className="mb-2 block text-sm text-muted-foreground" htmlFor="telegram-chat-id">
-          Chat ID Telegram
-        </label>
-        <input
-          id="telegram-chat-id"
-          type="text"
-          inputMode="numeric"
-          autoComplete="off"
-          value={chatId}
-          onChange={(e) => setChatId(e.target.value)}
-          placeholder="Ex: 123456789"
-          className="w-full rounded-xl border border-border bg-card px-3 py-2 text-foreground outline-hidden focus:border-primary"
-        />
-        <p className="mt-2 text-xs text-muted-foreground">
-          Envoie <code>/start</code> au bot puis récupère ton chat ID via <code>@userinfobot</code>.
-          Laisse vide pour désactiver.
-        </p>
-      </Panel>
-
       <Panel className="rounded-2xl">
         <div className="mb-3 flex flex-row items-center gap-2">
           <Bell size={16} className="text-primary" />

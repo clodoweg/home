@@ -14,7 +14,7 @@ vi.mock('../context/UserContext', () => ({
   useUserProfile: () => profile,
 }));
 
-const SETTINGS = { telegramChatId: '42', notificationPreferences: { spa: false } };
+const SETTINGS = { notificationPreferences: { spa: false } };
 
 beforeEach(() => {
   profile.token = 'jwt';

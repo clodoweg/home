@@ -192,7 +192,6 @@ export async function mockAllApis(page: Page, options: MockApiOptions): Promise<
   const account = {
     widgetPreferences: { ...widgetPreferences },
     theme: userProfile.theme ?? 'dark',
-    telegramChatId: null as string | null,
     notificationPreferences: {} as Record<string, boolean>,
   };
   const serviceCalls: ActionCall[] = [];
@@ -221,16 +220,14 @@ export async function mockAllApis(page: Page, options: MockApiOptions): Promise<
         contentType: 'application/json',
         body: JSON.stringify({
           preferences: account.widgetPreferences,
-          telegramChatId: account.telegramChatId,
           notificationPreferences: account.notificationPreferences,
         }),
       });
     }
-    const { theme, telegramChatId, notificationPreferences, ...widgetFields } =
+    const { theme, notificationPreferences, ...widgetFields } =
       route.request().postDataJSON() ?? {};
-    preferenceUpdates.push({ theme, telegramChatId, notificationPreferences, ...widgetFields });
+    preferenceUpdates.push({ theme, notificationPreferences, ...widgetFields });
     if (theme) account.theme = theme;
-    if (telegramChatId !== undefined) account.telegramChatId = telegramChatId;
     if (notificationPreferences !== undefined) {
       account.notificationPreferences = {
         ...account.notificationPreferences,

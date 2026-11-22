@@ -113,8 +113,8 @@ lint-staged (`eslint --fix`, `prettier --write` sur les fichiers indexés).
   le nouveau service worker prend la main tout de suite, la page se recharge aussitôt si elle est
   cachée, sinon au prochain retour ou après 30 s sans interaction (jamais en plein usage).
 - Alertes (admins seulement, comme côté back) : la cloche de l'en-tête (`AppHeader`, badge des non
-  lues) ouvre `screens/AlertsScreen.tsx` : les alertes des 30 derniers jours (celles envoyées aussi
-  sur Telegram, `GET /api/notifications`), lues à l'ouverture, chacune ouvrant son widget
+  lues) ouvre `screens/AlertsScreen.tsx` : les alertes des 30 derniers jours (`GET /api/notifications` ;
+  cloche et push sont le seul canal, Telegram a été retiré), lues à l'ouverture, chacune ouvrant son widget
   (`lib/alert-notifications.ts`, partagé avec le service worker) ; et l'interrupteur des
   notifications push de l'appareil (`usePushSubscription`, clé VAPID du back). Le service worker
   affiche le push et prévient la page (`hsh-push-received`), qui recharge la liste ; la liste se

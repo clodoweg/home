@@ -1,5 +1,5 @@
 /**
- * ThresholdsTab — Colour thresholds of the dashboard and, for admins, Telegram alert thresholds:
+ * ThresholdsTab — Colour thresholds of the dashboard and, for admins, alert thresholds (bell and push):
  * edited locally, validated, then saved in one call.
  */
 import React, { useId, useState } from 'react';
@@ -81,48 +81,42 @@ type AlertRule =
   | { key: keyof AlertThresholds; max: number; message: string }
   | { min: keyof AlertThresholds; max: keyof AlertThresholds; message: string };
 
-/** Telegram alerts, checked in this order: a range (0 to max) or a min < max pair. */
+/** Alert thresholds, checked in this order: a range (0 to max) or a min < max pair. */
 const ALERT_RULES: AlertRule[] = [
   {
     key: 'notificationSpaTempThreshold',
     max: 50,
-    message: 'Notifications Telegram Spa : La température doit être comprise entre 0°C et 50°C.',
+    message: 'Alertes Spa : La température doit être comprise entre 0°C et 50°C.',
   },
   {
     key: 'notificationTempMinThreshold',
     max: 50,
-    message:
-      'Notifications Telegram Température Min : La température doit être comprise entre 0°C et 50°C.',
+    message: 'Alertes Température Min : La température doit être comprise entre 0°C et 50°C.',
   },
   {
     key: 'notificationTempMaxThreshold',
     max: 50,
-    message:
-      'Notifications Telegram Température Max : La température doit être comprise entre 0°C et 50°C.',
+    message: 'Alertes Température Max : La température doit être comprise entre 0°C et 50°C.',
   },
   {
     min: 'notificationTempMinThreshold',
     max: 'notificationTempMaxThreshold',
-    message:
-      'Notifications Telegram Température : Le seuil minimal doit être inférieur au seuil maximal.',
+    message: 'Alertes Température : Le seuil minimal doit être inférieur au seuil maximal.',
   },
   {
     key: 'notificationHumidityMinThreshold',
     max: 100,
-    message:
-      "Notifications Telegram Humidité Min : Le taux d'humidité doit être compris entre 0% et 100%.",
+    message: "Alertes Humidité Min : Le taux d'humidité doit être compris entre 0% et 100%.",
   },
   {
     key: 'notificationHumidityMaxThreshold',
     max: 100,
-    message:
-      "Notifications Telegram Humidité Max : Le taux d'humidité doit être compris entre 0% et 100%.",
+    message: "Alertes Humidité Max : Le taux d'humidité doit être compris entre 0% et 100%.",
   },
   {
     min: 'notificationHumidityMinThreshold',
     max: 'notificationHumidityMaxThreshold',
-    message:
-      'Notifications Telegram Humidité : Le seuil minimal doit être inférieur au seuil maximal.',
+    message: 'Alertes Humidité : Le seuil minimal doit être inférieur au seuil maximal.',
   },
 ];
 
@@ -133,7 +127,7 @@ const levelValue = (draft: ThresholdsDraft, kind: 'temp' | 'hum', key: string): 
  * First validation error of the draft, if any.
  *
  * @param draft - Values being edited.
- * @param isAdmin - Whether the Telegram thresholds are edited too.
+ * @param isAdmin - Whether the alert thresholds are edited too.
  * @returns The message to show, or null when everything is valid.
  */
 const findValidationError = (draft: ThresholdsDraft, isAdmin: boolean): string | null => {
@@ -264,7 +258,7 @@ export const ThresholdsTab = () => {
       await updateThresholds({
         temp: draft.temp,
         hum: draft.hum,
-        // Telegram alert thresholds are an admin setting.
+        // Alert thresholds are an admin setting.
         notifications: isAdmin ? draft.notifications : undefined,
       });
       setMessage('Seuils sauvegardés avec succès !');
@@ -286,7 +280,7 @@ export const ThresholdsTab = () => {
       value={draft.notifications[key]}
       integer={integer}
       onValueChange={(value) => setAlert(key, value)}
-      testId={`input-telegram-${testId}`}
+      testId={`input-alert-${testId}`}
     />
   );
 
@@ -335,7 +329,7 @@ export const ThresholdsTab = () => {
         {isAdmin && (
           <div className="rounded-2xl bg-muted p-5 md:col-span-2">
             <h3 className="mb-4 text-xs font-bold tracking-wider text-primary uppercase">
-              Seuils de Notifications Telegram (Admin)
+              Seuils des alertes (Admin)
             </h3>
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
               <div className="rounded-xl border border-border bg-background p-4">

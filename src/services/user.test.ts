@@ -76,14 +76,12 @@ describe('getNotificationSettings', () => {
     server.use(
       http.get(`${API_URL}/api/user/preferences`, () =>
         HttpResponse.json({
-          telegramChatId: '42',
           notificationPreferences: { alarm: true },
           preferences: { order: [] },
         }),
       ),
     );
     await expect(user.getNotificationSettings('jwt')).resolves.toEqual({
-      telegramChatId: '42',
       notificationPreferences: { alarm: true },
     });
   });
@@ -91,7 +89,6 @@ describe('getNotificationSettings', () => {
   it('defaults missing fields', async () => {
     server.use(http.get(`${API_URL}/api/user/preferences`, () => HttpResponse.json({})));
     await expect(user.getNotificationSettings('jwt')).resolves.toEqual({
-      telegramChatId: null,
       notificationPreferences: {},
     });
   });
@@ -118,9 +115,9 @@ describe('updatePreferences', () => {
     );
 
     await expect(
-      user.updatePreferences('jwt', { theme: 'light', telegramChatId: null }),
+      user.updatePreferences('jwt', { theme: 'light', notificationPreferences: { spa: false } }),
     ).resolves.toBeUndefined();
-    expect(body).toEqual({ theme: 'light', telegramChatId: null });
+    expect(body).toEqual({ theme: 'light', notificationPreferences: { spa: false } });
   });
 
   it('throws an ApiError on a non-2xx response', async () => {

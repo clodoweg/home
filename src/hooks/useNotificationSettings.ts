@@ -1,4 +1,4 @@
-/** useNotificationSettings — Telegram chat ID and alert categories of the user, read and saved through React Query. */
+/** useNotificationSettings — alert categories of the user (bell and push), read and saved through React Query. */
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useUserProfile } from '../context/UserContext';
 import { queryKeys } from '../lib/query-keys';

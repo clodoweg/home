@@ -148,9 +148,7 @@ test.describe('TemperatureWidget', () => {
     await expect(salonHumAfter).toHaveClass(/text-warning/);
   });
 
-  test('un administrateur peut configurer les seuils de notifications Telegram', async ({
-    page,
-  }) => {
+  test('un administrateur peut configurer les seuils des alertes', async ({ page }) => {
     await mockAllApis(page, {
       userProfile: ADMIN_PROFILE,
       haStates: ALL_HA_STATES,
@@ -166,15 +164,15 @@ test.describe('TemperatureWidget', () => {
     // Click on the Thresholds tab
     await page.getByTestId('reorder-tab-thresholds').click();
 
-    // Verify Telegram Thresholds section is visible
-    await expect(page.getByText('Seuils de Notifications Telegram (Admin)')).toBeVisible();
+    // Verify alert thresholds section is visible
+    await expect(page.getByText('Seuils des alertes (Admin)')).toBeVisible();
 
     // Locate the inputs by test-id
-    const spaInput = page.getByTestId('input-telegram-spa');
-    const tempMinInput = page.getByTestId('input-telegram-temp-min');
-    const tempMaxInput = page.getByTestId('input-telegram-temp-max');
-    const humMinInput = page.getByTestId('input-telegram-hum-min');
-    const humMaxInput = page.getByTestId('input-telegram-hum-max');
+    const spaInput = page.getByTestId('input-alert-spa');
+    const tempMinInput = page.getByTestId('input-alert-temp-min');
+    const tempMaxInput = page.getByTestId('input-alert-temp-max');
+    const humMinInput = page.getByTestId('input-alert-hum-min');
+    const humMaxInput = page.getByTestId('input-alert-hum-max');
 
     // Initial default values
     await expect(spaInput).toHaveValue('37');
@@ -197,7 +195,7 @@ test.describe('TemperatureWidget', () => {
     await expect(page.getByText('Seuils sauvegardés avec succès !')).toBeVisible();
   });
 
-  test('un utilisateur standard ne voit pas la section de configuration des seuils Telegram', async ({
+  test('un utilisateur standard ne voit pas la section de configuration des seuils des alertes', async ({
     page,
   }) => {
     // Override standard auth bypass from beforeEach
@@ -218,13 +216,13 @@ test.describe('TemperatureWidget', () => {
     // Click on the Thresholds tab
     await page.getByTestId('reorder-tab-thresholds').click();
 
-    // Verify Telegram Thresholds section is NOT visible
-    await expect(page.getByText('Seuils de Notifications Telegram (Admin)')).not.toBeVisible();
-    await expect(page.getByTestId('input-telegram-spa')).not.toBeVisible();
-    await expect(page.getByTestId('input-telegram-temp-min')).not.toBeVisible();
-    await expect(page.getByTestId('input-telegram-temp-max')).not.toBeVisible();
-    await expect(page.getByTestId('input-telegram-hum-min')).not.toBeVisible();
-    await expect(page.getByTestId('input-telegram-hum-max')).not.toBeVisible();
+    // Verify alert thresholds section is NOT visible
+    await expect(page.getByText('Seuils des alertes (Admin)')).not.toBeVisible();
+    await expect(page.getByTestId('input-alert-spa')).not.toBeVisible();
+    await expect(page.getByTestId('input-alert-temp-min')).not.toBeVisible();
+    await expect(page.getByTestId('input-alert-temp-max')).not.toBeVisible();
+    await expect(page.getByTestId('input-alert-hum-min')).not.toBeVisible();
+    await expect(page.getByTestId('input-alert-hum-max')).not.toBeVisible();
   });
 
   test("peut reconfigurer l'ordre et la visibilité des pièces par étage", async ({
