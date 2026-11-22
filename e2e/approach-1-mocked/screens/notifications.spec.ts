@@ -1,5 +1,5 @@
 /**
- * Tests: écran Notifications — chat Telegram et catégories, enregistrés côté back.
+ * Tests: écran Notifications — catégories d'alertes, enregistrés côté back.
  */
 import { test, expect } from '@playwright/test';
 import { mockAllApis } from '../../fixtures/api-mocks';
@@ -12,16 +12,13 @@ test.describe('Écran Notifications', () => {
     await bypassClerkAuth(page, ADMIN_PROFILE);
   });
 
-  test('enregistre le chat Telegram et désactive une catégorie activée par défaut', async ({
-    page,
-  }) => {
+  test("désactive une catégorie activée par défaut et l'enregistre", async ({ page }) => {
     const { preferenceUpdates } = await mockAllApis(page, { userProfile: ADMIN_PROFILE });
     await page.goto('/');
     await waitForDashboardReady(page);
 
     await page.getByTestId('menu-button').click();
     await page.getByTestId('menu-item-notifications').click();
-    await page.getByLabel(/chat id/i).fill('123456789');
     // B22: a category without a stored preference is on; one click must switch it off.
     const alarm = page.getByRole('button', { name: /^Alarme Activation/ });
     await expect(alarm).toHaveAttribute('aria-pressed', 'true');
@@ -30,7 +27,7 @@ test.describe('Écran Notifications', () => {
     await page.getByRole('button', { name: /Enregistrer/ }).click();
 
     await expect
-      .poll(() => preferenceUpdates.find((u) => u.telegramChatId))
-      .toMatchObject({ telegramChatId: '123456789', notificationPreferences: { alarm: false } });
+      .poll(() => preferenceUpdates.find((u) => u.notificationPreferences))
+      .toMatchObject({ notificationPreferences: { alarm: false } });
   });
 });

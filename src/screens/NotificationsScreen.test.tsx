@@ -18,7 +18,6 @@ const PREFERENCES_URL = `${API_URL}/api/user/preferences`;
 
 const serveSettings = (
   settings: Record<string, unknown> = {
-    telegramChatId: '123456',
     notificationPreferences: { spa: false },
   },
 ) => server.use(http.get(PREFERENCES_URL, () => HttpResponse.json(settings)));
@@ -32,17 +31,17 @@ beforeEach(() => {
 });
 
 describe('NotificationsScreen', () => {
-  it('shows the stored chat ID and categories', async () => {
+  it('shows the stored categories', async () => {
     serveSettings();
     renderScreen();
 
-    expect(await screen.findByLabelText('Chat ID Telegram')).toHaveValue('123456');
+    expect(await screen.findByRole('button', { name: /^Spa/ })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /^Spa/ })).toHaveAttribute('aria-pressed', 'false');
     expect(screen.getByRole('button', { name: /^Alarme/ })).toHaveAttribute('aria-pressed', 'true');
   });
 
   it('saves the edited settings', async () => {
-    serveSettings({ telegramChatId: null });
+    serveSettings({});
     const saved: unknown[] = [];
     server.use(
       http.post(PREFERENCES_URL, async ({ request }) => {
@@ -53,36 +52,13 @@ describe('NotificationsScreen', () => {
     const user = userEvent.setup();
     renderScreen();
 
-    await user.type(await screen.findByLabelText('Chat ID Telegram'), ' 42 ');
-    await user.click(screen.getByRole('button', { name: /^Alarme/ }));
+    await user.click(await screen.findByRole('button', { name: /^Alarme/ }));
     await user.click(screen.getByRole('button', { name: /^Alarme/ }));
     await user.click(screen.getByRole('button', { name: /^Spa/ }));
     await user.click(screen.getByRole('button', { name: 'Enregistrer' }));
 
     expect(await screen.findByText('Préférences enregistrées')).toBeInTheDocument();
-    expect(saved).toEqual([
-      { telegramChatId: '42', notificationPreferences: { alarm: true, spa: false } },
-    ]);
-  });
-
-  it('sends null to turn Telegram off', async () => {
-    serveSettings();
-    const saved: unknown[] = [];
-    server.use(
-      http.post(PREFERENCES_URL, async ({ request }) => {
-        saved.push(await request.json());
-        return HttpResponse.json({ ok: true });
-      }),
-    );
-    const user = userEvent.setup();
-    renderScreen();
-
-    await user.clear(await screen.findByLabelText('Chat ID Telegram'));
-    await user.click(screen.getByRole('button', { name: 'Enregistrer' }));
-
-    await waitFor(() =>
-      expect(saved).toEqual([{ telegramChatId: null, notificationPreferences: { spa: false } }]),
-    );
+    expect(saved).toEqual([{ notificationPreferences: { alarm: true, spa: false } }]);
   });
 
   it('says so when the save fails', async () => {
@@ -106,41 +82,49 @@ describe('NotificationsScreen', () => {
         attempts += 1;
         return attempts === 1
           ? HttpResponse.json({ error: 'down' }, { status: 500 })
-          : HttpResponse.json({ telegramChatId: '7', notificationPreferences: {} });
+          : HttpResponse.json({ notificationPreferences: { spa: false } });
       }),
     );
     const user = userEvent.setup();
     renderScreen();
 
     expect(await screen.findByText('Impossible de charger les préférences.')).toBeInTheDocument();
-    expect(screen.queryByLabelText('Chat ID Telegram')).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /^Spa/ })).not.toBeInTheDocument();
 
     await user.click(screen.getByRole('button', { name: 'Réessayer' }));
 
-    expect(await screen.findByLabelText('Chat ID Telegram')).toHaveValue('7');
+    expect(await screen.findByRole('button', { name: /^Spa/ })).toHaveAttribute(
+      'aria-pressed',
+      'false',
+    );
   });
 
   it('starts from fresh settings on a second visit, not from the cached copy', async () => {
-    let chatId = '1';
+    let spaEnabled = true;
     server.use(
       http.get(PREFERENCES_URL, () =>
-        HttpResponse.json({ telegramChatId: chatId, notificationPreferences: {} }),
+        HttpResponse.json({ notificationPreferences: { spa: spaEnabled } }),
       ),
     );
     const client = createTestQueryClient();
     const first = render(<NotificationsScreen />, { wrapper: createQueryWrapper(client) });
-    expect(await screen.findByLabelText('Chat ID Telegram')).toHaveValue('1');
+    expect(await screen.findByRole('button', { name: /^Spa/ })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
     first.unmount();
 
-    chatId = '2';
+    spaEnabled = false;
     render(<NotificationsScreen />, { wrapper: createQueryWrapper(client) });
 
-    expect(await screen.findByLabelText('Chat ID Telegram')).toHaveValue('2');
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: /^Spa/ })).toHaveAttribute('aria-pressed', 'false'),
+    );
   });
 
   it('waits without a session', () => {
     profile.token = null;
     renderScreen();
-    expect(screen.queryByLabelText('Chat ID Telegram')).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /^Spa/ })).not.toBeInTheDocument();
   });
 });

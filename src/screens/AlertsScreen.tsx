@@ -1,7 +1,6 @@
 /**
- * AlertsScreen — The admin's bell panel: latest alerts (the ones also sent on Telegram), newest
- * first, each opening its widget; and the switch that sends them as push notifications to this
- * device.
+ * AlertsScreen — The admin's bell panel: latest alerts (30 days), newest first, each opening its
+ * widget; and the switch that sends them as push notifications to this device.
  */
 import React, { useEffect, useRef, useState } from 'react';
 import {

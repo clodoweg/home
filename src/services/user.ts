@@ -28,7 +28,7 @@ export interface HumidityThresholds {
   humOutdoorMaxRed: number;
 }
 
-/** Thresholds of the Telegram alerts (admin only, sent by the back). */
+/** Thresholds of the alerts (admin only, sent by the back to the bell and push). */
 export interface NotificationThresholds {
   notificationSpaTempThreshold: number;
   notificationHumidityThreshold: number;
@@ -84,18 +84,16 @@ export interface NotificationPreferences {
 }
 
 export interface NotificationSettings {
-  telegramChatId: string | null;
   notificationPreferences: NotificationPreferences;
 }
 
 /** Body of GET /api/user/preferences (its `preferences` field also comes with the profile). */
 interface PreferencesResponse {
-  telegramChatId?: string | null;
   notificationPreferences?: NotificationPreferences | null;
 }
 
 /**
- * Fetches the user's Telegram chat ID and per-category notification toggles.
+ * Fetches the user's per-category notification toggles.
  *
  * @param token - Session token.
  * @param signal - Cancellation from React Query.
@@ -110,7 +108,6 @@ export const getNotificationSettings = async (
     name: 'getNotificationSettings',
   });
   return {
-    telegramChatId: data.telegramChatId ?? null,
     notificationPreferences: data.notificationPreferences ?? {},
   };
 };
@@ -118,7 +115,6 @@ export const getNotificationSettings = async (
 /** Fields accepted by POST /api/user/preferences (merged into the stored preferences). */
 export type PreferencesUpdate = WidgetPreferences & {
   theme?: 'light' | 'dark';
-  telegramChatId?: string | null;
   notificationPreferences?: NotificationPreferences;
 };
 

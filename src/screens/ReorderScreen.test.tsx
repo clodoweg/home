@@ -409,17 +409,17 @@ describe('ReorderScreen — thresholds tab', () => {
       fireEvent.click(screen.getByRole('button', { name: /Sauvegarder les seuils|Sauvegarde/ }));
     });
 
-  it('shows the 16 dashboard thresholds and no Telegram section for a non-admin', async () => {
+  it('shows the 16 dashboard thresholds and no alert section for a non-admin', async () => {
     const { inputs } = await openThresholds();
 
     expect(inputs().map((i) => Number(i.value))).toEqual([
       ...Object.values(TEMP),
       ...Object.values(HUM),
     ]);
-    expect(screen.queryByText(/Notifications Telegram/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Seuils des alertes/)).not.toBeInTheDocument();
   });
 
-  it('saves the edited thresholds without the Telegram values for a non-admin', async () => {
+  it('saves the edited thresholds without the alert values for a non-admin', async () => {
     const { inputs } = await openThresholds();
 
     fireEvent.change(inputs()[0], { target: { value: '16.5' } });
@@ -591,20 +591,20 @@ describe('ReorderScreen — thresholds tab', () => {
     expect(inputs()[15].value).toBe('80');
   });
 
-  describe('admin Telegram section', () => {
+  describe('admin alert section', () => {
     beforeEach(() => {
       state.user = { ...state.user, isAdmin: true };
     });
 
-    it('shows the Telegram thresholds and saves them with the dashboard ones', async () => {
+    it('shows the alert thresholds and saves them with the dashboard ones', async () => {
       await openThresholds();
 
-      expect(screen.getByText('Seuils de Notifications Telegram (Admin)')).toBeInTheDocument();
-      fireEvent.change(screen.getByTestId('input-telegram-spa'), { target: { value: '38.5' } });
-      fireEvent.change(screen.getByTestId('input-telegram-temp-min'), { target: { value: '12' } });
-      fireEvent.change(screen.getByTestId('input-telegram-temp-max'), { target: { value: '29' } });
-      fireEvent.change(screen.getByTestId('input-telegram-hum-min'), { target: { value: '25' } });
-      fireEvent.change(screen.getByTestId('input-telegram-hum-max'), { target: { value: '75.9' } });
+      expect(screen.getByText('Seuils des alertes (Admin)')).toBeInTheDocument();
+      fireEvent.change(screen.getByTestId('input-alert-spa'), { target: { value: '38.5' } });
+      fireEvent.change(screen.getByTestId('input-alert-temp-min'), { target: { value: '12' } });
+      fireEvent.change(screen.getByTestId('input-alert-temp-max'), { target: { value: '29' } });
+      fireEvent.change(screen.getByTestId('input-alert-hum-min'), { target: { value: '25' } });
+      fireEvent.change(screen.getByTestId('input-alert-hum-max'), { target: { value: '75.9' } });
       await save();
 
       expect(state.prefs.updateThresholds).toHaveBeenCalledWith({
@@ -620,87 +620,79 @@ describe('ReorderScreen — thresholds tab', () => {
       });
     });
 
-    it('turns empty Telegram entries into 0', async () => {
+    it('turns empty alert entries into 0', async () => {
       await openThresholds();
       for (const id of ['spa', 'temp-min', 'temp-max', 'hum-min', 'hum-max']) {
-        fireEvent.change(screen.getByTestId(`input-telegram-${id}`), { target: { value: '' } });
-        fireEvent.blur(screen.getByTestId(`input-telegram-${id}`));
-        expect(screen.getByTestId(`input-telegram-${id}`)).toHaveValue(0);
+        fireEvent.change(screen.getByTestId(`input-alert-${id}`), { target: { value: '' } });
+        fireEvent.blur(screen.getByTestId(`input-alert-${id}`));
+        expect(screen.getByTestId(`input-alert-${id}`)).toHaveValue(0);
       }
     });
 
     it.each([
-      [
-        'spa',
-        '-1',
-        'Notifications Telegram Spa : La température doit être comprise entre 0°C et 50°C.',
-      ],
-      [
-        'spa',
-        '51',
-        'Notifications Telegram Spa : La température doit être comprise entre 0°C et 50°C.',
-      ],
+      ['spa', '-1', 'Alertes Spa : La température doit être comprise entre 0°C et 50°C.'],
+      ['spa', '51', 'Alertes Spa : La température doit être comprise entre 0°C et 50°C.'],
       [
         'temp-min',
         '-1',
-        'Notifications Telegram Température Min : La température doit être comprise entre 0°C et 50°C.',
+        'Alertes Température Min : La température doit être comprise entre 0°C et 50°C.',
       ],
       [
         'temp-min',
         '51',
-        'Notifications Telegram Température Min : La température doit être comprise entre 0°C et 50°C.',
+        'Alertes Température Min : La température doit être comprise entre 0°C et 50°C.',
       ],
       [
         'temp-max',
         '-1',
-        'Notifications Telegram Température Max : La température doit être comprise entre 0°C et 50°C.',
+        'Alertes Température Max : La température doit être comprise entre 0°C et 50°C.',
       ],
       [
         'temp-max',
         '51',
-        'Notifications Telegram Température Max : La température doit être comprise entre 0°C et 50°C.',
+        'Alertes Température Max : La température doit être comprise entre 0°C et 50°C.',
       ],
       [
         'temp-min',
         '30',
-        'Notifications Telegram Température : Le seuil minimal doit être inférieur au seuil maximal.',
+        'Alertes Température : Le seuil minimal doit être inférieur au seuil maximal.',
       ],
       [
         'hum-min',
         '-1',
-        "Notifications Telegram Humidité Min : Le taux d'humidité doit être compris entre 0% et 100%.",
+        "Alertes Humidité Min : Le taux d'humidité doit être compris entre 0% et 100%.",
       ],
       [
         'hum-min',
         '101',
-        "Notifications Telegram Humidité Min : Le taux d'humidité doit être compris entre 0% et 100%.",
+        "Alertes Humidité Min : Le taux d'humidité doit être compris entre 0% et 100%.",
       ],
       [
         'hum-max',
         '-1',
-        "Notifications Telegram Humidité Max : Le taux d'humidité doit être compris entre 0% et 100%.",
+        "Alertes Humidité Max : Le taux d'humidité doit être compris entre 0% et 100%.",
       ],
       [
         'hum-max',
         '101',
-        "Notifications Telegram Humidité Max : Le taux d'humidité doit être compris entre 0% et 100%.",
+        "Alertes Humidité Max : Le taux d'humidité doit être compris entre 0% et 100%.",
       ],
       [
         'hum-min',
         '70',
-        'Notifications Telegram Humidité : Le seuil minimal doit être inférieur au seuil maximal.',
+        'Alertes Humidité : Le seuil minimal doit être inférieur au seuil maximal.',
       ],
-    ])('refuses Telegram %s = %s', async (id, value, message) => {
+    ])('refuses alert %s = %s', async (id, value, message) => {
       await openThresholds();
 
-      fireEvent.change(screen.getByTestId(`input-telegram-${id}`), { target: { value } });
+      fireEvent.change(screen.getByTestId(`input-alert-${id}`), { target: { value } });
       await save();
 
       expect(screen.getByText(message)).toBeInTheDocument();
       expect(state.prefs.updateThresholds).not.toHaveBeenCalled();
     });
 
-    it('follows Telegram threshold changes coming from the preferences', async () => {
+    it('follows alert threshold changes coming from the preferences', async () => {
       const { view } = await openThresholds();
 
       state.prefs = makePrefs({
@@ -712,11 +704,11 @@ describe('ReorderScreen — thresholds tab', () => {
       });
       view.rerender(<ReorderScreen onNavigate={vi.fn()} />);
 
-      expect(screen.getByTestId('input-telegram-spa')).toHaveValue(39);
-      expect(screen.getByTestId('input-telegram-temp-min')).toHaveValue(10);
-      expect(screen.getByTestId('input-telegram-temp-max')).toHaveValue(27);
-      expect(screen.getByTestId('input-telegram-hum-min')).toHaveValue(20);
-      expect(screen.getByTestId('input-telegram-hum-max')).toHaveValue(80);
+      expect(screen.getByTestId('input-alert-spa')).toHaveValue(39);
+      expect(screen.getByTestId('input-alert-temp-min')).toHaveValue(10);
+      expect(screen.getByTestId('input-alert-temp-max')).toHaveValue(27);
+      expect(screen.getByTestId('input-alert-hum-min')).toHaveValue(20);
+      expect(screen.getByTestId('input-alert-hum-max')).toHaveValue(80);
     });
   });
 });
