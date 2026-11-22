@@ -34,8 +34,11 @@ describe('Content-Security-Policy', () => {
     expect(csp.get('img-src')).toEqual(["'self'", 'blob:', 'https://img.clerk.com']);
   });
 
-  it('loads Clerk from its production domain', () => {
+  it('loads Clerk from its production domain, never from the development instance', () => {
     expect(csp.get('script-src')).toContain('https://clerk.home.psaltery.org');
+    expect(csp.get('script-src')?.some((source) => source.includes('clerk.accounts.dev'))).toBe(
+      false,
+    );
   });
 
   it('lets Clerk bot protection load (script and frame)', () => {
@@ -44,12 +47,11 @@ describe('Content-Security-Policy', () => {
   });
 
   it('only talks to the backend and Clerk', () => {
-    // Clerk production (clerk.home.psaltery.org) and, during the move, the development instance
+    // Clerk production instance only: the development one serves local runs, never this CSP
     expect(csp.get('connect-src')).toEqual([
       "'self'",
       'https://home-back.psaltery.org',
       'https://clerk.home.psaltery.org',
-      'https://eager-penguin-61.clerk.accounts.dev',
       'https://*.protect.clerk.com:*',
     ]);
   });
