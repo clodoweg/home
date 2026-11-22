@@ -287,3 +287,7 @@ maquettes », non versionné). Le back, les services, hooks, permissions et le c
 - **Toute nouvelle route du back implique son client dans `src/services/<domaine>.ts`** (ré-exporté
   par `api.ts`) **et son mock dans `e2e/fixtures/api-mocks.ts`** ; inversement, tout appel ajouté ici
   doit exister côté back. Une modification de format de réponse se fait dans les deux dépôts.
+- Actions Home Assistant : le back n'accepte des comptes non admin (la famille) que les services
+  listés dans `DASHBOARD_ACTIONS` (`../home-back/lib/permissions.ts`), ceux qu'appelle
+  `performAction` aujourd'hui. Un nouveau domaine ou service appelé ici s'y ajoute dans le même
+  changement, sinon la famille reçoit un 403 (seul l'admin passe).
