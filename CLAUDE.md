@@ -151,6 +151,11 @@ lint-staged (`eslint --fix`, `prettier --write` sur les fichiers indexés).
   React Compiler viennent de `eslint-plugin-react-hooks` ; leurs copies `@eslint-react` sont
   éteintes. Écriture React 19 imposée : `ref` en prop (pas de `forwardRef`), `<Context>` comme
   fournisseur, `use(Context)`, refs nommées `…Ref`.
+- `eslint-plugin-sonarjs` (règles de SonarQube, sans service externe) : complexité cognitive au plus
+  15 par fonction ; les fichiers qui dépassaient à son adoption ont leur plafond dans
+  `COGNITIVE_COMPLEXITY_BASELINE` (`eslint.config.mjs`), à baisser quand on les refactore, jamais à
+  relever. Ternaires imbriqués admis. Un faux positif se coupe sur sa ligne avec la raison
+  (`// eslint-disable-next-line sonarjs/… -- raison`).
 - Vite 8 (Rolldown) : le découpage se règle par `build.rolldownOptions.output.codeSplitting`.
   Toucher à ce découpage peut laisser du code de test dans le build : `check:dist` le détecte, ne
   le contourne pas.
@@ -182,13 +187,14 @@ lint-staged (`eslint --fix`, `prettier --write` sur les fichiers indexés).
   garder à la version de `@playwright/test`, comme dans `update-snapshots.yml` : changer de version
   impose de régénérer les captures Linux). Les E2E tournent sur un build de test
   (`vite build --outDir dist-e2e` + `vite preview`, service worker bloqué), 4 workers : 2,7 au lieu
-  de 5 min en local, 6,6 au lieu de 7,9 min sur le runner GitHub, plus lent ; `codeql.yml` (analyse
-  de sécurité CodeQL, requêtes `security-extended`, du TypeScript et des workflows ; aussi chaque
-  semaine ; résultats dans Security → Code scanning) ; `security-audit.yml`
+  de 5 min en local, 6,6 au lieu de 7,9 min sur le runner GitHub, plus lent ; `security-audit.yml`
   (`npm audit --package-lock-only --omit=dev --audit-level=high`, sans `npm ci` : seules les
   dépendances de prod bloquent, le rapport complet reste en artefact ; plus Dependency Review ; sur
   les PR qui touchent `package.json` / `package-lock.json`, et chaque semaine) ;
-  `update-snapshots.yml` (manuel : régénère les captures Linux des tests visuels).
+  `update-snapshots.yml` (manuel : régénère les captures Linux des tests visuels). CodeQL (analyse
+  de sécurité du TypeScript et des workflows, suite « Extended ») tourne en **configuration par
+  défaut** de GitHub (Settings → Code security), sans fichier : n'ajoute pas de `codeql.yml`, les
+  deux configurations ne coexistent pas. Résultats dans Security → Code scanning.
 
 ## Refonte UI de novembre 2026 : état et reprise
 
@@ -267,7 +273,7 @@ maquettes », non versionné). Le back, les services, hooks, permissions et le c
 2. `npm run verify` (Node 24) avant de pousser ; voir `TESTING.md` pour l'environnement local.
 3. Pousser sans `--force` : la branche distante garde l'historique des PR déjà fusionnées, d'où un
    commit `git merge -s ours origin/<branche>` avant le push (le diff reste celui du changement).
-4. PR vers `main`, CI verte (`ci.yml`, `e2e.yml`, `codeql.yml`), puis fusion **squash**. Un échec
+4. PR vers `main`, CI verte (`ci.yml`, `e2e.yml`, CodeQL), puis fusion **squash**. Un échec
    d'un run sur `main` après la fusion se corrige en priorité.
    Demande de l'utilisateur (15 novembre 2026) : un changement terminé et vérifié est poussé, mis en
    PR et fusionné **automatiquement** dès que la CI est verte, sans lui redemander.

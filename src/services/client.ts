@@ -176,6 +176,7 @@ export const traceApi = async <T>(
   fn: (requestId: string, currentToken?: string) => Promise<T>,
   originalToken?: string,
 ): Promise<T> => {
+  // eslint-disable-next-line sonarjs/pseudo-random -- log correlation id, not a secret
   const id = Math.random().toString(36).substring(7);
   const start = Date.now();
 

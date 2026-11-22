@@ -12,6 +12,7 @@ export const crashingWidgets = new Set<string>();
  */
 export const stubWidget = (name: string) => {
   const Stub = (_props: Record<string, unknown>): React.ReactElement => {
+    // eslint-disable-next-line sonarjs/no-empty-collection -- filled by the tests through the export
     if (crashingWidgets.has(name)) throw new Error(`${name} exploded`);
     return <div data-testid={`widget-stub-${name}`} />;
   };

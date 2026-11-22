@@ -100,7 +100,7 @@ export function calculateRemainingMinutes(
       }
     }
 
-    const hMatches = strVal.match(/^(\d+)\s*h(?:eures?|rs?)?(?:\s*(\d+)(?:m(?:in|ins)?)?)?$/i);
+    const hMatches = strVal.match(/^(\d+)\s*h(?:eure|r)?s?(?:\s*(\d+)(?:m(?:ins?)?)?)?$/i);
     if (hMatches) {
       const hours = Number(hMatches[1]);
       const mins = hMatches[2] ? Number(hMatches[2]) : 0;
