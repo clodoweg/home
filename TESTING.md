@@ -1,8 +1,8 @@
 # Guide des tests
 
 Deux niveaux, tous deux bloquants dans `npm run verify` avant chaque push. En CI, les unitaires
-tournent sur chaque PR (`.github/workflows/ci.yml`) ; les E2E (`e2e.yml`) sur une PR qui porte le
-label `e2e`, à la main, ou la nuit sur `main` s'il a changé (quota Actions limité) :
+(`.github/workflows/ci.yml`) et les E2E (`e2e.yml`) tournent sur chaque PR et sur `main` après la
+fusion :
 
 | Niveau                    | Outil                                           | Où                       | Commande                                     |
 | ------------------------- | ----------------------------------------------- | ------------------------ | -------------------------------------------- |
