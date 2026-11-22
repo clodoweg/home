@@ -8,7 +8,7 @@
       "headers": [
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' https://eager-penguin-61.clerk.accounts.dev https://challenges.cloudflare.com https://*.protect.clerk.com; connect-src 'self' https://home-back.psaltery.org https://eager-penguin-61.clerk.accounts.dev https://*.protect.clerk.com:*; img-src 'self' blob: https://img.clerk.com; style-src 'self' 'unsafe-inline'; font-src 'self'; worker-src 'self' blob:; frame-src https://challenges.cloudflare.com https://*.protect.clerk.com; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests"
+          "value": "default-src 'self'; script-src 'self' https://clerk.home.psaltery.org https://eager-penguin-61.clerk.accounts.dev https://challenges.cloudflare.com https://*.protect.clerk.com; connect-src 'self' https://home-back.psaltery.org https://clerk.home.psaltery.org https://eager-penguin-61.clerk.accounts.dev https://*.protect.clerk.com:*; img-src 'self' blob: https://img.clerk.com; style-src 'self' 'unsafe-inline'; font-src 'self'; worker-src 'self' blob:; frame-src https://challenges.cloudflare.com https://*.protect.clerk.com; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests"
         },
         {
           "key": "Strict-Transport-Security",
