@@ -4,9 +4,31 @@ import eslintReact from '@eslint-react/eslint-plugin';
 import betterTailwindcss from 'eslint-plugin-better-tailwindcss';
 import prettierRecommended from 'eslint-plugin-prettier/recommended';
 import reactHooks from 'eslint-plugin-react-hooks';
+import sonarjs from 'eslint-plugin-sonarjs';
 import { defineConfig, globalIgnores } from 'eslint/config';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
+
+// WARNING: known debt, not an allowance. Functions above the cognitive complexity threshold (15)
+// when sonarjs was adopted (November 2026): each file keeps its worst score as a ceiling, so it
+// cannot get worse. Lower or remove an entry when its file is refactored; never raise one.
+const COGNITIVE_COMPLEXITY_BASELINE = {
+  'src/components/ui/TimelineChart.tsx': 19,
+  'src/components/widgets/AlarmWidget.tsx': 22,
+  'src/components/widgets/ArloWidget.tsx': 22,
+  'src/components/widgets/ElectricityWidget.tsx': 24,
+  'src/components/widgets/TemperatureWidget.tsx': 17,
+  'src/components/widgets/WashingMachineWidget.tsx': 44,
+  'src/components/widgets/petkit/FountainWidget.tsx': 39,
+  'src/components/widgets/spa/SpaControls.tsx': 17,
+  'src/components/widgets/washing-machine/labels.ts': 37,
+  'src/hooks/useHAHistory.ts': 23,
+  'src/lib/printer.ts': 31,
+  'src/screens/DashboardScreen.tsx': 22,
+  'src/screens/HomeSummaryTiles.tsx': 37,
+  'src/screens/history/EnergyHistory.tsx': 20,
+  'src/services/client.ts': 29,
+};
 
 export default defineConfig([
   globalIgnores([
@@ -24,6 +46,35 @@ export default defineConfig([
     ...eslintReact.configs['recommended-typescript'],
   },
   reactHooks.configs.flat.recommended,
+  sonarjs.configs.recommended,
+  {
+    rules: {
+      // Nested ternaries are the house style in JSX.
+      'sonarjs/no-nested-conditional': 'off',
+      // `TODO: [action]` is required by .claude/rules/code-comments.md.
+      'sonarjs/todo-tag': 'off',
+      // Event handlers inline in JSX nest naturally; nested template literals stay short here.
+      'sonarjs/no-nested-functions': 'off',
+      'sonarjs/no-nested-template-literals': 'off',
+      // `void promise` marks a deliberately unawaited call.
+      'sonarjs/void-use': 'off',
+    },
+  },
+  ...Object.entries(COGNITIVE_COMPLEXITY_BASELINE).map(([file, ceiling]) => ({
+    files: [file],
+    rules: { 'sonarjs/cognitive-complexity': ['error', ceiling] },
+  })),
+  {
+    // Fake hosts, plain-http fixtures, exact expected numbers and assertions made in helpers are
+    // what tests are for.
+    files: ['**/*.test.{ts,tsx}', 'src/test/**', 'e2e/**'],
+    rules: {
+      'sonarjs/assertions-in-tests': 'off',
+      'sonarjs/no-clear-text-protocols': 'off',
+      'sonarjs/no-floating-point-equality': 'off',
+      'sonarjs/no-hardcoded-ip': 'off',
+    },
+  },
   {
     files: ['**/*.{ts,tsx}'],
     rules: {

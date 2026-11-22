@@ -64,7 +64,7 @@ export const isArloEntity = (entityId: string): boolean =>
  * (`light.a1_…`, `light.p1s_…`), "bambu" anywhere, or a printer-light suffix.
  */
 export const PRINTER_LIGHT_PATTERN =
-  /^light\.(p1s|x1c|p1p|a1)(_|$)|bambu|(_chamber_light|_lumiere_de_la_chambre|_printer_light)$/;
+  /(?:^light\.(?:p1s|x1c|p1p|a1)(?:_|$))|bambu|(?:(?:_chamber_light|_lumiere_de_la_chambre|_printer_light)$)/;
 
 /** Where each printer value is looked up: Home Assistant domain and accepted id suffixes. */
 export const PRINTER_LOOKUPS = {

@@ -125,7 +125,7 @@ export const WashingMachineWidget = memo(function WashingMachineWidget({
     rawSpin !== '0' &&
     rawSpin.toLowerCase() !== 'no_spin' &&
     rawSpin.toLowerCase() !== 'off'
-      ? `${rawSpin.replace(/\s*(rpm|tr\/min)/i, '')} tr/min`
+      ? `${rawSpin.replace(/rpm|tr\/min/i, '').trim()} tr/min`
       : rawSpin === '0' || rawSpin?.toLowerCase() === 'no_spin'
         ? 'Sans essorage'
         : null;

@@ -500,7 +500,7 @@ export async function mockAllApis(page: Page, options: MockApiOptions): Promise<
 
   // ── HA images (Petkit previews) ──────────────────────────────────────
   // The back serves raw image bytes; SecureImage fetches them with a Bearer header
-  await page.route(/\/api\/ha\/(media|image)(\?|\/)/, (route) =>
+  await page.route(/\/api\/ha\/(media|image)[?/]/, (route) =>
     route.fulfill({
       status: 200,
       contentType: 'image/png',

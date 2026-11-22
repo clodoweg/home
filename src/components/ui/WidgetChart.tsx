@@ -216,10 +216,7 @@ export const WidgetChart = ({
   return (
     <div className={cn('w-full', className)}>
       {(yLabel || yLabelRight) && (
-        <div
-          className="mb-1 flex items-center"
-          style={{ paddingLeft: 4, paddingRight: hasRightAxis ? 4 : 4 }}
-        >
+        <div className="mb-1 flex items-center" style={{ paddingLeft: 4, paddingRight: 4 }}>
           {yLabel && (
             <span className="text-[9px] tracking-wide text-muted-foreground uppercase">
               {yLabel}

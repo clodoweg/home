@@ -8,8 +8,7 @@ import { mockAllApis } from '../../fixtures/api-mocks';
 import { bypassClerkAuth } from '../../fixtures/auth';
 import { ADMIN_PROFILE, USER_PROFILE } from '../../fixtures/users';
 import { ALL_HA_STATES } from '../../fixtures/mock-data/ha-states';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { WIDGET, TEMPERATURE } from '../../helpers/widget-selectors';
+import { TEMPERATURE } from '../../helpers/widget-selectors';
 import { waitForDashboardReady, expectWidgetVisible } from '../../helpers/assertions';
 
 test.describe('TemperatureWidget', () => {

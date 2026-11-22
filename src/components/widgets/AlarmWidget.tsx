@@ -90,7 +90,7 @@ export const AlarmWidget = memo(function AlarmWidget({
     if (sirenTs && sirenTs > thirtyDaysAgo) candidates.push({ ts: sirenTs, label: 'Sirène' });
 
     if (candidates.length === 0) return null;
-    const best = candidates.reduce((a, c) => (c.ts > a.ts ? c : a));
+    const best = candidates.reduce((a, c) => (c.ts > a.ts ? c : a), candidates[0]);
     return { ...best, isToday: best.ts >= todayStart.getTime() };
   }, [siren, now]);
 

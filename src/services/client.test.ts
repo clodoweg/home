@@ -162,7 +162,7 @@ describe('traceApi — 401 with refresh handler', () => {
   });
 
   it('shares one refresh between parallel 401s and retries each call with the new token', async () => {
-    let resolveRefresh: (token: string) => void = () => undefined;
+    let resolveRefresh: (token: string) => void = (_token) => undefined;
     const refresh = vi.fn(
       () =>
         new Promise<string | null>((resolve) => {

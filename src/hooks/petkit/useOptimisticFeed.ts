@@ -69,6 +69,7 @@ export function useOptimisticFeed({ device, token, data }: Args) {
     const now = Math.floor(Date.now() / 1000);
 
     const optimisticRecord: PetkitRecord = {
+      // eslint-disable-next-line sonarjs/pseudo-random -- local id of an optimistic record, not a secret
       id: `opt_${now}_${Math.random().toString(36).substring(7)}`,
       deviceId: device.id,
       deviceType: device.deviceType,

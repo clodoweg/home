@@ -53,7 +53,8 @@ test.describe('Purge des données à la déconnexion', () => {
     await expect.poll(() => userStorageKeys(page)).toEqual([]);
     await expect.poll(() => apiCacheNames(page)).toEqual([]);
     // The query cache is persisted with a 1 s throttle: a write scheduled before the logout
-    // must not put the data back afterwards.
+    // must not put the data back afterwards. Checking that nothing happens needs a fixed wait.
+    // eslint-disable-next-line sonarjs/no-fixed-wait-in-tests -- absence of an event, nothing to poll
     await page.waitForTimeout(1_500);
     expect(await userStorageKeys(page)).toEqual([]);
     expect(await page.evaluate(() => localStorage.getItem('app-theme-preference'))).toBe('light');

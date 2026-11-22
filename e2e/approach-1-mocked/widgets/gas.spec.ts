@@ -2,8 +2,7 @@
  * Tests: GasWidget — données consommation GRDF.
  */
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { test, expect } from '@playwright/test';
+import { test } from '@playwright/test';
 import { mockAllApis } from '../../fixtures/api-mocks';
 import { bypassClerkAuth } from '../../fixtures/auth';
 import { ADMIN_PROFILE } from '../../fixtures/users';
