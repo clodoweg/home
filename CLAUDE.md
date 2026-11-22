@@ -172,23 +172,22 @@ lint-staged (`eslint --fix`, `prettier --write` sur les fichiers indexés).
   contient rien (`npm run check:dist`). Un `npm run dev` sans cette variable ne sert pas aux E2E.
 - En-têtes de sécurité (CSP, HSTS, Permissions-Policy) : `vercel.json`, vérifiés par
   `src/test/vercel-headers.test.ts`. Une nouvelle origine (API, Clerk) doit y être ajoutée.
-- CI GitHub (Node de `.nvmrc`, sauf dans l'image Playwright). Quota Actions limité (2 000 min/mois,
-  dépassé en novembre 2026) : la CI ne tourne **que sur les PR** vers main (pas sur le push de la
-  fusion, qui rejouait le même arbre), pas pour un changement limité aux `.md`, et un nouveau push
-  annule le run en cours. Ne rajoute pas de déclencheur `push` ; `workflow_dispatch` permet un run
-  à la main. `ci.yml` (job `checks` : la chaîne ci-dessus sans les E2E, sur chaque PR) ; `e2e.yml`
-  (E2E desktop et mobile dans l'image Docker de Playwright, à garder à la version de
-  `@playwright/test`, comme dans `update-snapshots.yml` : changer de version impose de régénérer
-  les captures Linux). Les E2E tournent déjà en local (`npm run verify`) ; en CI, seulement sur une
-  PR qui porte le label **`e2e`**, à la main, ou la nuit sur `main` s'il a changé dans les 24 h.
-  Mets le label `e2e` quand les E2E n'ont pas pu tourner en local (WebKit absent…), ou pour un
-  changement des E2E eux-mêmes, de `playwright.config.ts`, des dépendances ou du build. Les E2E
-  tournent sur un build de test (`vite build --outDir dist-e2e` + `vite preview`, service worker
-  bloqué), 4 workers : 2,7 au lieu de 5 min en local, 6,6 au lieu de 7,9 min sur le runner GitHub,
-  plus lent ; `security-audit.yml`
+- CI GitHub (Node de `.nvmrc`, sauf dans l'image Playwright). Le dépôt est **public** : les runners
+  GitHub standard ne consomment aucune minute du quota du compte (les restrictions de novembre 2026,
+  quand le dépôt était privé, ont été levées le 22 novembre 2026). Chaque workflow tourne sur les PR
+  vers `main` et sur `main` après la fusion (une fusion squash sur une base ancienne produit un arbre
+  qu'aucune PR n'a vérifié), pas pour un changement limité aux `.md` ; un nouveau push annule le run
+  en cours ; `workflow_dispatch` permet un run à la main. `ci.yml` (job `checks` : la chaîne
+  ci-dessus sans les E2E) ; `e2e.yml` (E2E desktop et mobile dans l'image Docker de Playwright, à
+  garder à la version de `@playwright/test`, comme dans `update-snapshots.yml` : changer de version
+  impose de régénérer les captures Linux). Les E2E tournent sur un build de test
+  (`vite build --outDir dist-e2e` + `vite preview`, service worker bloqué), 4 workers : 2,7 au lieu
+  de 5 min en local, 6,6 au lieu de 7,9 min sur le runner GitHub, plus lent ; `codeql.yml` (analyse
+  de sécurité CodeQL, requêtes `security-extended`, du TypeScript et des workflows ; aussi chaque
+  semaine ; résultats dans Security → Code scanning) ; `security-audit.yml`
   (`npm audit --package-lock-only --omit=dev --audit-level=high`, sans `npm ci` : seules les
-  dépendances de prod bloquent, le rapport complet reste en artefact ; sur les PR qui touchent
-  `package.json` / `package-lock.json`, et chaque semaine) ;
+  dépendances de prod bloquent, le rapport complet reste en artefact ; plus Dependency Review ; sur
+  les PR qui touchent `package.json` / `package-lock.json`, et chaque semaine) ;
   `update-snapshots.yml` (manuel : régénère les captures Linux des tests visuels).
 
 ## Refonte UI de novembre 2026 : état et reprise
@@ -268,8 +267,8 @@ maquettes », non versionné). Le back, les services, hooks, permissions et le c
 2. `npm run verify` (Node 24) avant de pousser ; voir `TESTING.md` pour l'environnement local.
 3. Pousser sans `--force` : la branche distante garde l'historique des PR déjà fusionnées, d'où un
    commit `git merge -s ours origin/<branche>` avant le push (le diff reste celui du changement).
-4. PR vers `main`, CI verte (`ci.yml` : checks ; `e2e.yml` si la PR porte le label `e2e`), puis
-   fusion **squash**. Un échec du run E2E de la nuit sur `main` se corrige en priorité.
+4. PR vers `main`, CI verte (`ci.yml`, `e2e.yml`, `codeql.yml`), puis fusion **squash**. Un échec
+   d'un run sur `main` après la fusion se corrige en priorité.
    Demande de l'utilisateur (15 novembre 2026) : un changement terminé et vérifié est poussé, mis en
    PR et fusionné **automatiquement** dès que la CI est verte, sans lui redemander.
 
