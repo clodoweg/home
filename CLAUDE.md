@@ -158,6 +158,14 @@ lint-staged (`eslint --fix`, `prettier --write` sur les fichiers indexés).
   `@clerk/react/legacy` (la nouvelle API `signIn.sso` change la redirection, non vérifiable en E2E) ; `getToken` lève `ClerkOfflineError` hors
   ligne, à distinguer d'une session expirée. Les E2E simulent Clerk : tout changement d'auth se
   recette sur une preview Vercel.
+- Deux instances Clerk (depuis le 22 novembre 2026). **Production** : application « secondaire »
+  de `psaltery.org`, Frontend API sur `clerk.home.psaltery.org` (enregistrements DNS Cloudflare en
+  _DNS only_), accès **Invite-only** (comptes créés à la main dans Clerk), connexion Google avec les
+  identifiants OAuth du propriétaire (Google Cloud Console), clé `pk_live_…` dans la variable Vercel
+  `VITE_CLERK_PUBLISHABLE_KEY` (environnement Production) ; c'est le seul domaine Clerk de la CSP.
+  **Développement** (`eager-penguin-61.clerk.accounts.dev`, `pk_test_…`) : `.env.local` seulement.
+  Changer d'instance = clé ici + clés du back + domaine dans `vercel.json`, et chaque utilisateur
+  se reconnecte (le back rattache ses données par e-mail).
 - Variables d'env dans `.env.local` : `VITE_CLERK_PUBLISHABLE_KEY`, `VITE_API_URL` (défaut : prod).
   `VITE_TEST_MODE=true` active l'auth simulée utilisée par Playwright. C'est une constante de build
   (`__APP_TEST_MODE__`, `vite.config.mts`) : rien ne l'active à l'exécution et le build de prod n'en
