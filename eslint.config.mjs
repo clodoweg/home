@@ -4,6 +4,7 @@ import eslintReact from '@eslint-react/eslint-plugin';
 import betterTailwindcss from 'eslint-plugin-better-tailwindcss';
 import prettierRecommended from 'eslint-plugin-prettier/recommended';
 import reactHooks from 'eslint-plugin-react-hooks';
+import sonarjs from 'eslint-plugin-sonarjs';
 import { defineConfig, globalIgnores } from 'eslint/config';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
@@ -24,6 +25,7 @@ export default defineConfig([
     ...eslintReact.configs['recommended-typescript'],
   },
   reactHooks.configs.flat.recommended,
+  sonarjs.configs.recommended,
   {
     files: ['**/*.{ts,tsx}'],
     rules: {
