@@ -16,6 +16,10 @@ updates:
       # Must match the Playwright Docker image of e2e.yml and update-snapshots.yml, and a new
       # version means regenerating the Linux screenshots: upgraded by hand (TESTING.md).
       - dependency-name: '@playwright/test'
+      # typescript-eslint (ESLint) only supports TypeScript < 6.1: TypeScript 7 fails `npm install`
+      # (peer dependency). Lift this once typescript-eslint supports it, with the lint run.
+      - dependency-name: 'typescript'
+        update-types: ['version-update:semver-major']
     groups:
       security:
         applies-to: security-updates
