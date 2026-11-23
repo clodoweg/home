@@ -59,7 +59,8 @@ describe('WidgetGrid', () => {
     renderGrid();
 
     expect(grid().dataset.columns).toBe('3');
-    expect(grid().style.gridTemplateColumns).toBe('repeat(3, minmax(0, 1fr))');
+    // Read back normalized, as browsers do (jsdom 31+): `0` becomes `0px`.
+    expect(grid().style.gridTemplateColumns).toBe('repeat(3, minmax(0px, 1fr))');
     expect(mounts).toEqual(['a', 'b', 'c', 'd']);
   });
 
