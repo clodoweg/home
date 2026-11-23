@@ -181,7 +181,8 @@ lint-staged (`eslint --fix`, `prettier --write` sur les fichiers indexés).
   GitHub standard ne consomment aucune minute du quota du compte (les restrictions de novembre 2026,
   quand le dépôt était privé, ont été levées le 22 novembre 2026). Chaque workflow tourne sur les PR
   vers `main` et sur `main` après la fusion (une fusion squash sur une base ancienne produit un arbre
-  qu'aucune PR n'a vérifié), pas pour un changement limité aux `.md` ; un nouveau push annule le run
+  qu'aucune PR n'a vérifié) ; sur `main`, un changement limité aux `.md` les saute, jamais sur une PR
+  (la règle de `main` exige `ci.yml` et `e2e.yml`, voir plus bas) ; un nouveau push annule le run
   en cours ; `workflow_dispatch` permet un run à la main. `ci.yml` (job `checks` : la chaîne
   ci-dessus sans les E2E) ; `e2e.yml` (E2E desktop et mobile dans l'image Docker de Playwright, à
   garder à la version de `@playwright/test`, comme dans `update-snapshots.yml` : changer de version
@@ -199,7 +200,10 @@ lint-staged (`eslint --fix`, `prettier --write` sur les fichiers indexés).
   GitHub), une PR par version majeure, et une PR de sécurité dès qu'une faille est publiée ; la CI
   les vérifie comme les autres. `@playwright/test` en est exclu : il se met à jour à la main avec
   l'image Docker et les captures Linux. Signalement des failles : `SECURITY.md` (signalement privé
-  de GitHub).
+  de GitHub). Règle de branche sur `main` (Settings → Rules, sans contournement) : PR obligatoire
+  (0 approbation), force-push et suppression interdits, vérifications exigées : le job de `ci.yml`
+  (« Types, lint, unit tests, build »), celui de `e2e.yml` et CodeQL. Un contrôle exigé doit
+  tourner sur toute PR : pas de `paths-ignore` sur `pull_request` dans `ci.yml` et `e2e.yml`.
 
 ## Refonte UI de novembre 2026 : état et reprise
 

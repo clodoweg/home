@@ -1,13 +1,11 @@
 # Mocked E2E (desktop Chromium + iPhone WebKit), on every PR to main and on main after the merge.
-# The repository is public: GitHub-hosted runners cost no Actions minutes.
+# The repository is public: GitHub-hosted runners cost no Actions minutes. Every PR runs it (the
+# ruleset on main requires it); only the push to main skips documentation-only changes.
 name: E2E
 
 on:
   pull_request:
     branches: [main]
-    paths-ignore:
-      - '**/*.md'
-      - '.vscode/**'
   push:
     branches: [main]
     paths-ignore:
